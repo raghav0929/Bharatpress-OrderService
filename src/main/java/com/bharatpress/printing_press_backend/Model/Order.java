@@ -22,6 +22,33 @@ public class Order {
     private LocalDate orderDate;
     
     private int estimatedDays;
+    public double getTotalAmount() {
+		return totalAmount;
+	}
+
+	public void setTotalAmount(double totalAmount) {
+		this.totalAmount = totalAmount;
+	}
+
+	public double getAdvance() {
+		return advance;
+	}
+
+	public void setAdvance(double advance) {
+		this.advance = advance;
+	}
+
+	public double getRemainingBalance() {
+		return remainingBalance;
+	}
+
+	public void setRemainingBalance(double remainingBalance) {
+		this.remainingBalance = remainingBalance;
+	}
+
+	private double totalAmount;
+    private double advance;
+    private double remainingBalance;
     private String orderPhoto;
 
     // Getters and Setters
