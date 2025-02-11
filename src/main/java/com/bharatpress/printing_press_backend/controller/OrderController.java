@@ -58,4 +58,16 @@ public class OrderController {
 	    }
 	    
 	    
+	    @PutMapping("/{id}")
+	    public ResponseEntity<Order> updateOrder(@PathVariable Long id, @RequestBody Order updatedOrder) {
+	        try {
+	            Order order = orderService.updateOrder(id, updatedOrder);
+	            return ResponseEntity.ok(order);
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                    .body(null);
+	        }
+	    }
+	    
 }

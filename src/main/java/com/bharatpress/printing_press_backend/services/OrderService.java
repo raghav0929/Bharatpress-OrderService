@@ -10,6 +10,7 @@ import com.bharatpress.printing_press_backend.Repository.OrderRepository;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderService {
@@ -53,4 +54,21 @@ public class OrderService {
 	    public List<Order> getAllOrders() {
 	        return orderRepository.findAll();
 	    }
+	    
+	    public Order updateOrder(Long id, Order updatedOrder) {
+	        return orderRepository.findById(id).map(order -> {
+	            order.setOrderDetails(updatedOrder.getOrderDetails());
+	            order.setPhoneNumber(updatedOrder.getPhoneNumber());
+	            order.setStatus(updatedOrder.getStatus());
+	            order.setOrderDate(updatedOrder.getOrderDate());
+	            order.setEstimatedDays(updatedOrder.getEstimatedDays());
+	            order.setPriority(updatedOrder.getPriority());
+	            order.setTotalAmount(updatedOrder.getTotalAmount());
+	            order.setAdvance(updatedOrder.getAdvance());
+	            order.setRemainingBalance(updatedOrder.getRemainingBalance());
+	            // Do NOT update order photo
+	            return orderRepository.save(order);
+	        }).orElseThrow(() -> new RuntimeException("Order not found"));
+	    }
+	    
 }

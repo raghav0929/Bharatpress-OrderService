@@ -15,11 +15,13 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-            	 registry.addMapping("/api/orders/**") // Allow all endpoints under /api/orders
-                 .allowedOrigins("http://localhost:4200") // Allow requests from Angular
-                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Allow all relevant methods
+            	 registry.addMapping("/**") // Apply CORS to all endpoints
+                 .allowedOrigins("http://localhost:4200") // Allow Angular frontend
+                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Allow required methods
                  .allowedHeaders("*") // Allow all headers
-                 .allowCredentials(true); // Allow credentials (optional)
+                 .exposedHeaders("Authorization") // Expose Authorization header if using JWT
+                 .allowCredentials(true) // Allow credentials
+                 .maxAge(3600); // Cache CORS settings for 1 hour
                 
             }
         };
