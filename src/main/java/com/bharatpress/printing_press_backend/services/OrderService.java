@@ -55,6 +55,11 @@ public class OrderService {
 	        return orderRepository.findAll();
 	    }
 	    
+	    
+	    public void deleteOrdersByIds(List<Long> orderIds) {
+	        orderRepository.deleteAllById(orderIds);
+	    }
+	    
 	    public Order updateOrder(Long id, Order updatedOrder) {
 	        return orderRepository.findById(id).map(order -> {
 	            order.setOrderDetails(updatedOrder.getOrderDetails());

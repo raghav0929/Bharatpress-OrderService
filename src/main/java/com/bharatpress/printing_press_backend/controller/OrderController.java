@@ -13,6 +13,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -68,6 +69,13 @@ public class OrderController {
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	                    .body(null);
 	        }
+	    }
+	    
+	    @PostMapping("/delete-multiple")
+	    public ResponseEntity<Void> deleteMultipleOrders(@RequestBody Map<String, List<Long>> request) {
+	        List<Long> orderIds = request.get("orderIds");
+	        orderService.deleteOrdersByIds(orderIds);
+	        return ResponseEntity.noContent().build();
 	    }
 	    
 }
