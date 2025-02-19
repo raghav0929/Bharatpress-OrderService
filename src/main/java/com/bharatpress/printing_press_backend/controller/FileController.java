@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -18,23 +19,19 @@ import java.nio.file.Paths;
 @RequestMapping("/api/files")
 public class FileController {
 
-    private final String FILE_DIRECTORY = "D:/Coding/angular/Ordersapp/assets/order-photos";
+	 private final String uploadDir = "src/main/resources/static/order-photos"; // Update this path as needed
 
-    @GetMapping("/{filename}")
-    public ResponseEntity<Resource> getFile(@PathVariable String filename) {
-        try {
-            Path filePath = Paths.get(FILE_DIRECTORY).resolve(filename).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
+	    @GetMapping("/{filename}")
+	    public ResponseEntity<Resource> getFile(@PathVariable String filename) throws MalformedURLException {
+	        Path filePath = Paths.get(uploadDir).resolve(filename).normalize();
+	        Resource resource = new UrlResource(filePath.toUri());
 
-            if (!resource.exists()) {
-                return ResponseEntity.notFound().build();
-            }
-
-            return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_PNG) // Set the appropriate content type
-                .body(resource);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
+	        if (resource.exists() || resource.isReadable()) {
+	            return ResponseEntity.ok()
+	                    .contentType(MediaType.IMAGE_JPEG)  // Adjust MIME type if needed
+	                    .body(resource);
+	        } else {
+	            return ResponseEntity.notFound().build();
+	        }
+	    }
 }

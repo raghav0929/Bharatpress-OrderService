@@ -1,14 +1,13 @@
 package com.bharatpress.printing_press_backend.Model;
 
-
 import jakarta.persistence.*;
-import java.time.LocalDate;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "orders")
 public class Order {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,39 +16,21 @@ public class Order {
     private String phoneNumber;
     private String status;
     private String priority;
-    
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate orderDate;
-    
+
     private int estimatedDays;
-    public double getTotalAmount() {
-		return totalAmount;
-	}
-
-	public void setTotalAmount(double totalAmount) {
-		this.totalAmount = totalAmount;
-	}
-
-	public double getAdvance() {
-		return advance;
-	}
-
-	public void setAdvance(double advance) {
-		this.advance = advance;
-	}
-
-	public double getRemainingBalance() {
-		return remainingBalance;
-	}
-
-	public void setRemainingBalance(double remainingBalance) {
-		this.remainingBalance = remainingBalance;
-	}
-
-	private double totalAmount;
+    private double totalAmount;
     private double advance;
     private double remainingBalance;
+
+    // Stores only the filename, not the full path
     private String orderPhoto;
+
+    // Constructor
+    public Order() {
+    }
 
     // Getters and Setters
     public Long getId() {
@@ -106,6 +87,30 @@ public class Order {
 
     public void setEstimatedDays(int estimatedDays) {
         this.estimatedDays = estimatedDays;
+    }
+
+    public double getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public double getAdvance() {
+        return advance;
+    }
+
+    public void setAdvance(double advance) {
+        this.advance = advance;
+    }
+
+    public double getRemainingBalance() {
+        return remainingBalance;
+    }
+
+    public void setRemainingBalance(double remainingBalance) {
+        this.remainingBalance = remainingBalance;
     }
 
     public String getOrderPhoto() {
