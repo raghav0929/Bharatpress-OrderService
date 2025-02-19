@@ -1,5 +1,6 @@
 package com.bharatpress.printing_press_backend.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,27 +24,21 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
 
-    public OrderService(OrderRepository orderRepository) {
+    private final CloudinaryService cloudinaryService; // Inject CloudinaryService
+
+    @Autowired
+    public OrderService(OrderRepository orderRepository, CloudinaryService cloudinaryService) {
         this.orderRepository = orderRepository;
+        this.cloudinaryService = cloudinaryService;
     }
 
     public Order saveOrder(Order order, MultipartFile file) throws IOException {
     	if (file != null && !file.isEmpty()) {
             // Ensure directory exists
-            File uploadDirectory = new File(uploadDir);
-            if (!uploadDirectory.exists() && !uploadDirectory.mkdirs()) {
-                throw new IOException("Could not create upload directory: " + uploadDir);
-            }
+    		String imageUrl = cloudinaryService.uploadImage(file.getBytes());
 
-            // Generate unique filename and save
-            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            Path destinationPath = Path.of(uploadDir, fileName);
-
-            // Use Files.copy instead of transferTo
-            Files.copy(file.getInputStream(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
-            
-            // Save file name in database (not full path)
-            order.setOrderPhoto(fileName);
+            // Save the Cloudinary URL in the database
+            order.setOrderPhoto(imageUrl);
         }
 
         return orderRepository.save(order);
@@ -60,19 +55,20 @@ public class OrderService {
 
     public void deleteOrdersByIds(List<Long> orderIds) {
         List<Order> orders = orderRepository.findAllById(orderIds);
-        
+
         for (Order order : orders) {
-            String fileName = order.getOrderPhoto();
-            if (fileName != null && !fileName.isEmpty()) {
-                Path filePath = Paths.get(uploadDir, fileName);
-                try {
-                    Files.deleteIfExists(filePath);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            String imageUrl = order.getOrderPhoto();
+            
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                // Extract Public ID from Cloudinary URL
+                String publicId = cloudinaryService.extractPublicIdFromUrl(imageUrl);
+
+                // Call Cloudinary Service to delete the image
+                cloudinaryService.deleteImage(publicId);
             }
         }
 
+        // Delete orders from database
         orderRepository.deleteAllById(orderIds);
     }
 
